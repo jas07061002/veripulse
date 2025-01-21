@@ -16,11 +16,12 @@ load_dotenv()
 
 HUGGINGFACE_API_KEY = os.getenv("HUGGINGFACE_API_TOKEN")
 
+
 # API URL for the summarization model (using a free model like `facebook/bart-large-cnn`)
 SUMMARY_API = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
 
 API_URL = "https://api-inference.huggingface.co/models/EleutherAI/gpt-neo-2.7B"
-headers = {"Authorization": "Bearer {HUGGINGFACE_API_KEY}"}
+headers = {"Authorization": f"Bearer {HUGGINGFACE_API_KEY}"}
 
 
 def get_huggingface_api_response(user_query: str, url: str):
