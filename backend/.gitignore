@@ -1,0 +1,17 @@
+# Ignore all .log files
+*.log
+
+# Ignore the node_modules directory
+node_modules/
+
+# Ignore Python bytecode files
+*.pyc
+
+# ignore python cache
+__pycache__/
+
+# ignore package-lock.json
+package-lock.json
+
+# ignore .DS_Store
+.DS_Store
