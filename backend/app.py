@@ -1,11 +1,4 @@
-import logging
-import pdb
-import os
-import sys
-import requests
-import re
-import urllib.parse
-import torch
+import logging ,pdb ,os ,sys ,requests ,re ,torch ,urllib.parse
 from fastapi import FastAPI, HTTPException
 from openai import OpenAI
 from bs4 import BeautifulSoup
@@ -23,14 +16,17 @@ load_dotenv()
 
 HUGGINGFACE_API_KEY = os.getenv("HUGGINGFACE_API_TOKEN")
 
+# API URL for the summarization model (using a free model like `facebook/bart-large-cnn`)
+SUMMARY_API = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
+
 API_URL = "https://api-inference.huggingface.co/models/EleutherAI/gpt-neo-2.7B"
 headers = {"Authorization": "Bearer {HUGGINGFACE_API_KEY}"}
 
 
-def get_huggingface_api_response(user_query: str):
+def get_huggingface_api_response(user_query: str, url: str):
     try:
         # Send request to Hugging Face API
-        response = requests.post(API_URL, headers=headers, json={"inputs": user_query})
+        response = requests.post(url, headers=headers, json={"inputs": user_query})
         
         # Check if the response is successful
         if response.status_code == 200:
@@ -64,7 +60,7 @@ def get_huggingface_api_response(user_query: str):
 def get_response(user_message):
     try:
         logger.info(f"Received message: {user_message}")
-        response = get_huggingface_api_response(user_message)
+        response = get_huggingface_api_response(user_message, API_URL)
         logger.info(f"Response from Hugging Face: {response}")
         return {"search_results": response}
     except Exception as e:
@@ -125,15 +121,9 @@ def search_for_sources(query: str):
 
 def summarize_content(content: str):
     try:
-        # Use OpenAI to summarize the content (you could also use other models like BERT or a custom model)
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "system", "content": "You are a summarizer."},
-                {"role": "user", "content": f"Summarize this: {content}"}
-            ]
-        )
-        return response['choices'][0]['message']['content']
+        # Use hugging face API to summarize the content
+        response = get_huggingface_api_response(content,SUMMARY_API_URL)
+        return response
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error summarizing content: {e}")
 
