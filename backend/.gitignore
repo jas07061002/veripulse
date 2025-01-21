@@ -15,3 +15,6 @@ package-lock.json
 
 # ignore .DS_Store
 .DS_Store
+
+# ignore env files
+.env
